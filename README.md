@@ -26,7 +26,7 @@ The Sales KPI Tracking App is a tool designed to help manage and evaluate the pe
 2. Install the required dependencies:
 
    ```sh
-   pip install -r requirements.txt
+   pip install tk matplotlib sqlite3
    ```
 
 3. Run the application:

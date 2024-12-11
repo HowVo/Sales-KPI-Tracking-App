@@ -33,14 +33,16 @@ def calculate_kpis(rep_id):
    avg_made_per_call = cash_collected / num_calls if num_calls else 0
 
 
-   print(f"Calculated KPIs for rep_id {rep_id}: show_percentage={show_percentage}, offer_percentage={offer_percentage}, close_percentage={close_percentage}, avg_made_per_call={avg_made_per_call}")
+   print(f"Calculated KPIs for rep_id {rep_id}: show_percentage={show_percentage}, offer_percentage={offer_percentage}, close_percentage={close_percentage}, cash_collected={cash_collected}, avg_made_per_call={avg_made_per_call}")
 
 
    return {
        'show_percentage': show_percentage,
        'offer_percentage': offer_percentage,
        'close_percentage': close_percentage,
-       'avg_made_per_call': avg_made_per_call
+       'cash_collected': cash_collected,
+       'avg_made_per_call': avg_made_per_call,
+       'num_calls': num_calls
    }
 
 

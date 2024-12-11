@@ -118,32 +118,34 @@ def center_window(root, width=900, height=600):
    root.geometry(f'{width}x{height}+{x}+{y}')
 
 
-
-
 def draw_revenue_comparison():
    reps = list_sales_reps()
    rep_ids = [rep[0] for rep in reps]
    rep_names = [rep[1] for rep in reps]
-   avg_made_per_call_values = []
+   num_calls_values = []
+   cash_collected_values = []
 
    for rep_id in rep_ids:
        kpis = calculate_kpis(rep_id)
        if kpis:
-           avg_made_per_call_values.append(kpis['avg_made_per_call'])
+           num_calls_values.append(kpis['num_calls'])
+           cash_collected_values.append(kpis['cash_collected'])
        else:
-           avg_made_per_call_values.append(0)
+           num_calls_values.append(0)
+           cash_collected_values.append(0)
 
    plt.figure(figsize=(10, 6))
-   bars = plt.bar(rep_ids, avg_made_per_call_values, color='blue')
-   plt.xlabel('Sales Rep ID')
-   plt.ylabel('Average Made Per Call')
-   plt.title('Average Made Per Call for Each Sales Rep')
+   bars = plt.bar(num_calls_values, cash_collected_values, color='blue')
+   plt.xlabel('Number of Calls')
+   plt.ylabel('Cash Collected')
+   plt.title('Cash Collected for Each Sales Rep')
 
    for bar, rep_name in zip(bars, rep_names):
        yval = bar.get_height()
        plt.text(bar.get_x() + bar.get_width()/2, yval, rep_name, ha='center', va='bottom')
 
    plt.show()
+   
 
 def main():
    create_tables()
