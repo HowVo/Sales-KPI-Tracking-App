@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import tkinter as tk
+import random
 from tkinter import messagebox
 from database import create_tables
 from sales_rep_management import add_sales_rep, list_sales_reps, remove_sales_rep, update_sales_data
@@ -119,32 +120,58 @@ def center_window(root, width=900, height=600):
 
 
 def draw_revenue_comparison():
-   reps = list_sales_reps()
-   rep_ids = [rep[0] for rep in reps]
-   rep_names = [rep[1] for rep in reps]
-   num_calls_values = []
-   cash_collected_values = []
+    reps = list_sales_reps()
+    rep_ids = [rep[0] for rep in reps]
+    rep_names = [rep[1] for rep in reps]
+    num_calls_values = []
+    cash_collected_values = []
 
-   for rep_id in rep_ids:
-       kpis = calculate_kpis(rep_id)
-       if kpis:
-           num_calls_values.append(kpis['num_calls'])
-           cash_collected_values.append(kpis['cash_collected'])
-       else:
-           num_calls_values.append(0)
-           cash_collected_values.append(0)
+    for rep_id in rep_ids:
+        kpis = calculate_kpis(rep_id)
+        if kpis:
+            num_calls_values.append(kpis['num_calls'])
+            cash_collected_values.append(kpis['cash_collected'])
+        else:
+            num_calls_values.append(0)
+            cash_collected_values.append(0)
 
-   plt.figure(figsize=(10, 6))
-   bars = plt.bar(num_calls_values, cash_collected_values, color='blue')
-   plt.xlabel('Number of Calls')
-   plt.ylabel('Cash Collected')
-   plt.title('Cash Collected for Each Sales Rep')
+    # Find duplicate call counts
+    call_count_dict = {}
+    for call in num_calls_values:
+        if call in call_count_dict:
+            call_count_dict[call] += 1
+        else:
+            call_count_dict[call] = 1
 
-   for bar, rep_name in zip(bars, rep_names):
-       yval = bar.get_height()
-       plt.text(bar.get_x() + bar.get_width()/2, yval, rep_name, ha='center', va='bottom')
+    # Assign colors to bars
+    colors = []
+    for call in num_calls_values:
+        if call_count_dict[call] > 1:
+            colors.append("#" + ''.join([random.choice('0123456789ABCDEF') for j in range(6)]))
+        else:
+            colors.append('blue')
 
-   plt.show()
+    # Sort by cash collected in descending order
+    sorted_data = sorted(zip(num_calls_values, cash_collected_values, rep_names, colors), key=lambda x: x[1], reverse=True)
+    num_calls_values, cash_collected_values, rep_names, colors = zip(*sorted_data)
+
+    plt.figure(figsize=(10, 6))
+    bars = plt.bar(num_calls_values, cash_collected_values, color=colors)
+    plt.xlabel('Number of Calls')
+    plt.ylabel('Cash Collected')
+    plt.title('Cash Collected for Each Sales Rep')
+
+    for bar, rep_name in zip(bars, rep_names):
+        yval = bar.get_height()
+        plt.text(bar.get_x() + bar.get_width()/2, yval, rep_name, ha='center', va='bottom', color='black')
+
+    # Create a legend
+    color_rep_map = {color: rep_name for color, rep_name in zip(colors, rep_names)}
+    unique_colors = list(set(colors))
+    legend_labels = [color_rep_map[color] for color in unique_colors]
+    plt.legend(handles=[plt.Line2D([0], [0], color=color, lw=4) for color in unique_colors], labels=legend_labels, loc='best')
+
+    plt.show()
    
 
 def main():
