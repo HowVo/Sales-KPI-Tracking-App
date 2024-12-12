@@ -151,6 +151,10 @@ def draw_revenue_comparison():
         else:
             colors.append('blue')
 
+    # Sort by cash collected in descending order
+    sorted_data = sorted(zip(num_calls_values, cash_collected_values, rep_names, colors), key=lambda x: x[1], reverse=True)
+    num_calls_values, cash_collected_values, rep_names, colors = zip(*sorted_data)
+
     plt.figure(figsize=(10, 6))
     bars = plt.bar(num_calls_values, cash_collected_values, color=colors)
     plt.xlabel('Number of Calls')
